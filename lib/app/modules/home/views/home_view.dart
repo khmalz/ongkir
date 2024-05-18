@@ -30,7 +30,7 @@ class HomeView extends GetView<HomeController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Obx(() {
-                    if (controller.provAsalId.value == 0) {
+                    if (controller.provAsal.value == null) {
                       const SizedBox();
                     }
 
@@ -50,19 +50,19 @@ class HomeView extends GetView<HomeController> {
                       asyncItems: controller.getProvinces,
                       onChanged: (Province? data) {
                         if (data != null) {
-                          controller.provAsalId.value =
-                              int.parse(data.provinceId!);
+                          controller.provAsal.value = data;
                         } else {
-                          controller.provAsalId.value = 0;
-                          controller.cityAsalId.value = 0;
+                          controller.provAsal.value = null;
+                          controller.cityAsal.value = null;
                         }
 
                         controller.validateProvAsal();
                       },
+                      selectedItem: controller.provAsal.value,
                     );
                   }),
                   Obx(() {
-                    if (controller.provAsalId.value == 0) {
+                    if (controller.provAsal.value == null) {
                       return const SizedBox();
                     }
 
@@ -86,28 +86,26 @@ class HomeView extends GetView<HomeController> {
                           asyncItems: (String? search) => controller.getCities(
                             {
                               'province':
-                                  controller.provAsalId.value.toString(),
+                                  controller.provAsal.value!.provinceId!,
                             },
                           ),
                           onChanged: (City? data) {
+                            debugPrint(data.toString());
                             data != null
-                                ? controller.cityAsalId.value =
-                                    int.parse(data.cityId!)
-                                : controller.cityAsalId.value = 0;
+                                ? controller.cityAsal.value = data
+                                : controller.cityAsal.value = null;
 
                             controller.validateCityAsal();
                           },
+                          selectedItem: controller.cityAsal.value,
                         ),
                       ],
                     );
                   }),
                   const SizedBox(height: 10),
                   Obx(() => DropdownSearch<Province>(
-                        popupProps: PopupProps.menu(
+                        popupProps: const PopupProps.menu(
                           showSearchBox: true,
-                          disabledItemFn: (Province s) =>
-                              s.provinceId ==
-                              controller.provAsalId.value.toString(),
                         ),
                         clearButtonProps:
                             const ClearButtonProps(isVisible: true),
@@ -122,18 +120,18 @@ class HomeView extends GetView<HomeController> {
                         asyncItems: controller.getProvinces,
                         onChanged: (Province? data) {
                           if (data != null) {
-                            controller.provTujuanId.value =
-                                int.parse(data.provinceId!);
+                            controller.provTujuan.value = data;
                           } else {
-                            controller.provTujuanId.value = 0;
-                            controller.cityTujuanId.value = 0;
+                            controller.provTujuan.value = null;
+                            controller.cityTujuan.value = null;
                           }
 
                           controller.validateProvTujuan();
                         },
+                        selectedItem: controller.provTujuan.value,
                       )),
                   Obx(() {
-                    if (controller.provTujuanId.value == 0) {
+                    if (controller.provTujuan.value == null) {
                       return const SizedBox();
                     }
 
@@ -157,17 +155,17 @@ class HomeView extends GetView<HomeController> {
                           asyncItems: (String? search) => controller.getCities(
                             {
                               'province':
-                                  controller.provTujuanId.value.toString(),
+                                  controller.provTujuan.value!.provinceId!,
                             },
                           ),
                           onChanged: (City? data) {
                             data != null
-                                ? controller.cityTujuanId.value =
-                                    int.parse(data.cityId!)
-                                : controller.cityTujuanId.value = 0;
+                                ? controller.cityTujuan.value = data
+                                : controller.cityTujuan.value = null;
 
                             controller.validateCityTujuan();
                           },
+                          selectedItem: controller.cityTujuan.value,
                         ),
                       ],
                     );
@@ -216,11 +214,12 @@ class HomeView extends GetView<HomeController> {
                       ),
                       onChanged: (value) {
                         value != null
-                            ? controller.kurir.value = value['code']
-                            : controller.kurir.value = '';
+                            ? controller.kurir.value = value
+                            : controller.kurir.value = null;
 
                         controller.validateKurir();
                       },
+                      selectedItem: controller.kurir.value,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -238,6 +237,23 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ),
                       child: const Text('Cek Ongkir'),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        controller.resetForm();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      child: const Text('Reset'),
                     ),
                   ),
                 ],

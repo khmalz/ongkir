@@ -11,8 +11,8 @@ import 'package:ongkos_kirim/app/routes/app_pages.dart';
 
 class HomeController extends GetxController {
   final box = GetStorage();
-  var provincesCache = <Province>[].obs;
-  var citiesCache = <City>[].obs;
+  RxList<Province> provincesCache = <Province>[].obs;
+  RxList<City> citiesCache = <City>[].obs;
 
   ProvinceProvider provinceProvider = ProvinceProvider();
   CityProvider cityProvider = CityProvider();
@@ -21,11 +21,11 @@ class HomeController extends GetxController {
   final apiKey = 'dda1790b2f6cb1426e9e84b4ba6c92ac';
   final cacheDuration = const Duration(minutes: 30);
 
-  Rx<int> provAsalId = 0.obs;
-  Rx<int> provTujuanId = 0.obs;
-  Rx<int> cityAsalId = 0.obs;
-  Rx<int> cityTujuanId = 0.obs;
-  Rx<String> kurir = ''.obs;
+  Rxn<Province> provAsal = Rxn<Province>(null);
+  Rxn<Province> provTujuan = Rxn<Province>(null);
+  Rxn<City> cityAsal = Rxn<City>(null);
+  Rxn<City> cityTujuan = Rxn<City>(null);
+  Rxn<Map<String, dynamic>> kurir = Rxn<Map<String, dynamic>>(null);
 
   Rxn<String> errorProvAsal = Rxn<String>(null);
   Rxn<String> errorProvTujuan = Rxn<String>(null);
@@ -112,10 +112,10 @@ class HomeController extends GetxController {
   Future<dynamic>? cekOngkir() {
     if (validateForm()) {
       final data = {
-        'cityAsalId': cityAsalId.value.toString(),
-        'cityTujuanId': cityTujuanId.value.toString(),
+        'cityAsalId': cityAsal.value!.cityId.toString(),
+        'cityTujuanId': cityTujuan.value!.cityId.toString(),
         'weight': weightInput.text,
-        'kurir': kurir.value
+        'kurir': kurir.value!['code'].toString()
       };
 
       return Get.toNamed(Routes.ONGKIR, parameters: data);
@@ -162,7 +162,7 @@ class HomeController extends GetxController {
   }
 
   bool validateProvAsal() {
-    if (provAsalId.value == 0) {
+    if (provAsal.value == null) {
       errorProvAsal.value = 'Provinsi asal harus dipilih';
       return false;
     }
@@ -171,7 +171,7 @@ class HomeController extends GetxController {
   }
 
   bool validateProvTujuan() {
-    if (provTujuanId.value == 0) {
+    if (provTujuan.value == null) {
       errorProvTujuan.value = 'Provinsi tujuan harus dipilih';
       return false;
     }
@@ -180,7 +180,7 @@ class HomeController extends GetxController {
   }
 
   bool validateCityAsal() {
-    if (cityAsalId.value == 0) {
+    if (cityAsal.value == null) {
       errorCityAsal.value = 'Kota/Kabupaten asal harus dipilih';
       return false;
     }
@@ -189,7 +189,7 @@ class HomeController extends GetxController {
   }
 
   bool validateCityTujuan() {
-    if (cityTujuanId.value == 0) {
+    if (cityTujuan.value == null) {
       errorCityTujuan.value = 'Kota/Kabupaten tujuan harus dipilih';
       return false;
     }
@@ -213,12 +213,28 @@ class HomeController extends GetxController {
   }
 
   bool validateKurir() {
-    if (kurir.value.isEmpty) {
+    if (kurir.value == null) {
       errorKurir.value = 'Kurir harus dipilih';
       return false;
     }
     errorKurir.value = null;
     return true;
+  }
+
+  void resetForm() {
+    provAsal.value = null;
+    provTujuan.value = null;
+    cityAsal.value = null;
+    cityTujuan.value = null;
+    weightInput.clear();
+    kurir.value = null;
+
+    errorProvAsal.value = null;
+    errorCityAsal.value = null;
+    errorProvTujuan.value = null;
+    errorCityTujuan.value = null;
+    errorWeight.value = null;
+    errorKurir.value = null;
   }
 }
 
