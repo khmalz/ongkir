@@ -1,0 +1,26 @@
+name: ongkos_kirim
+version: 1.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment:
+   sdk: ">=3.3.4 <4.0.0"
+
+dependencies:
+   cupertino_icons: ^1.0.6
+   get: 4.6.6
+   dropdown_search: 5.0.6
+   dio: 5.4.3+1
+   get_storage: 2.1.1
+   flutter_svg: 2.0.10+1
+   flutter:
+      sdk: flutter
+
+dev_dependencies:
+   flutter_lints: 4.0.0
+   flutter_test:
+      sdk: flutter
+
+flutter:
+   uses-material-design: true
+   assets:
+      - assets/svg/arrow_right.svg
