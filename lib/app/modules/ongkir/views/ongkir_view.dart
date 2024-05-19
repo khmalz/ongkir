@@ -75,7 +75,7 @@ class OngkirView extends GetView<OngkirController> {
                       ),
                       SvgPicture.asset(
                         'assets/svg/arrow_right.svg',
-                        height: 50,
+                        height: 40,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

@@ -10,7 +10,7 @@ void main() async {
 
   runApp(
     GetMaterialApp(
-      title: "Ongkir App",
+      title: "Ongkir",
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
